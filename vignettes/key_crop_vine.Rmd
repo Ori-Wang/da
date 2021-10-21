@@ -1,0 +1,52 @@
+---
+title: "key_crop_vine"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{crps_ori}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  error = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(da)
+library(dplyr)
+library(ggplot2)
+```
+
+```{r}
+key_crop_yields %>% 
+  distinct(year)
+
+```
+
+
+```{r}
+key_crop_yields %>% 
+  filter(year == 2017) %>% 
+  group_by(crop) %>% 
+  summarise(tonnes_per_hectare = sum(tonnes_per_hectare, na.rm = T)) %>% 
+  ggplot(aes(forcats::fct_reorder(crop, tonnes_per_hectare, .desc = T),tonnes_per_hectare)) + 
+  geom_col() + 
+  theme_bw() + 
+  labs(
+    x = "crop", 
+    y = "amount", 
+    title = "Crop production")
+```
+
+```{r}
+key_crop_yields %>% 
+  group_by(year, crop) %>% 
+  summarise(tonnes_per_hectare = sum(tonnes_per_hectare, na.rm = T)) %>% 
+  ggplot(aes(x =year, y = tonnes_per_hectare, color = crop)) + 
+  geom_line()
+```
+
